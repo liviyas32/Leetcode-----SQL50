@@ -1,0 +1,5 @@
+select d.name as department, e.name as employee, salary
+from department as d join 
+(select departmentid, name, salary, dense_rank() over(partition by departmentid order by salary desc) as ranking
+from employee) as e on d.id = e.departmentid
+where ranking in (1,2,3);
