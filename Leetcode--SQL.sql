@@ -96,3 +96,40 @@ where ranking < 4;
 delete a
 from person as a, person as b
 where a.email = b.email and b.id<a.id;
+
+
+-- 29th January 2026 --
+-- #11 197. Rising Temperature --
+select w1.id as id
+from weather as w1 join weather as w2
+on w1.recorddate = date_add(w2.recorddate, interval 1 day)
+and w1.temperature>w2.temperature;
+
+
+-- #12 262. Trips and Users --
+with abc as
+(select client_id, driver_id, status, request_at, u.banned as user_banned, ud.banned as driver_banned
+from trips as t join users as u join users as ud
+on t.client_id=u.users_id and t.driver_id = ud.users_id 
+where u.banned = 'No' and ud.banned = 'No'
+order by request_at)
+
+select request_at as Day, 
+round(sum(case when status = 'cancelled_by_client' or status = 'cancelled_by_driver' then 1 else 0 end)/
+count(request_at),2) as `Cancellation Rate`
+from abc
+where request_at between '2013-10-01' and '2013-10-03'
+group by 1
+order by 1;
+
+
+select request_at as Day, 
+round(sum(case when status = 'cancelled_by_driver' or status = 'cancelled_by_client' then 1 else 0 end)/count(request_at),2) as `Cancellation Rate`
+from trips
+where client_id in (select users_id from users where banned='No' and role = 'client')
+and driver_id in (select users_id from users where banned='No' and role = 'driver')
+and request_at between '2013-10-01' and '2013-10-03'
+group by 1
+order by 1;
+
+
