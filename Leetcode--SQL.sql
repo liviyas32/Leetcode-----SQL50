@@ -133,3 +133,73 @@ group by 1
 order by 1;
 
 
+-- 30th January 2026 --
+-- #13 1757. Recyclable and Low Fat Products
+select product_id
+from products
+where low_fats = 'Y' and recyclable = 'Y';
+
+
+-- #14 584. Find Customer Referee
+select name
+from customer
+where referee_id<>2 or referee_id is null;
+
+
+-- #15 595. Big Countries
+select name, population, area
+from world
+where area >= 3000000 or population >= 25000000;
+
+
+-- #16 1148. Article Views I
+select distinct author_id as id
+from views
+where author_id = viewer_id
+order by id asc;
+
+
+-- #17 1683. Invalid Tweets
+select tweet_id
+from tweets
+where length(content)>15;
+
+
+-- #18 1378. Replace Employee ID With The Unique Identifier
+select eu.unique_id as unique_id, e.name as name
+from employees as e left join employeeuni as eu
+on e.id=eu.id;
+
+
+-- #19 1068. Product Sales Analysis I
+select product_name, year, price
+from sales as s left join product as p
+on s.product_id = p.product_id;
+
+
+-- #20 1581. Customer Who Visited but Did Not Make Any Transactions
+select customer_id, count(*) as count_no_trans
+from visits as v left join transactions as t
+on v.visit_id = t.visit_id
+where transaction_id is null
+group by customer_id;
+
+
+-- #21 197. Rising Temperature
+select w1.id
+from weather as w1 join weather as w2
+on w1.recorddate = date_add(w2.recorddate, interval 1 day)
+and w1.temperature > w2.temperature;
+
+
+-- #22 1661. Average Time of Process per Machine
+select a1.machine_id, round(sum(a2.timestamp-a1.timestamp)/count(a1.machine_id),3) as processing_time
+from activity as a1 inner join activity as a2
+on a1.machine_id=a2.machine_id and a1.process_id = a2.process_id
+where a1.activity_type = 'start' and a2.activity_type = 'end'
+group by a1.machine_id;
+
+
+-- #23 
+
+
