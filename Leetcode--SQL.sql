@@ -200,6 +200,45 @@ where a1.activity_type = 'start' and a2.activity_type = 'end'
 group by a1.machine_id;
 
 
--- #23 
+-- #23 577. Employee Bonus
+select name, bonus
+from employee as e left join bonus as b
+on e.empid=b.empid
+where bonus<1000 or bonus is null;
+
+
+-- #24 1280. Students and Examinations
+select st.student_id, st.student_name, su.subject_name, count(e.subject_name) as attended_exams
+from students as st cross join subjects as su left join examinations as e
+on st.student_id = e.student_id and su.subject_name = e.subject_name
+group by st.student_id, st.student_name, su.subject_name
+order by st.student_id, su.subject_name;
+
+
+-- #25 570. Managers with at Least 5 Direct Reports
+select m.name as name
+from employee as e join employee as m
+on e.managerid=m.id
+group by m.name, m.id
+having count(*)>=5;
+
+
+-- #26 1934. Confirmation Rate
+select s.user_id, round(coalesce(sum(case when action='confirmed' then 1 else 0 end)/count(c.user_id),0),2) as confirmation_rate
+from signups as s left join confirmations as c
+on s.user_id = c.user_id
+group by 1;
+
+
+-- #27 620. Not Boring Movies
+select id, movie, description, rating
+from cinema
+where mod(id,2)!=0 and  not description like 'boring'
+order by rating desc;
+
+
+-- #28 1251. Average Selling Price
+
+
 
 
