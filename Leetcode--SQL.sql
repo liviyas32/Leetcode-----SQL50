@@ -41,6 +41,16 @@ on l1.num = l2.num and l1.id = l2.id+2
 and l1.num = l3.num and l1.id = l3.id+1;
 
 
+with abc as
+(select id, num, id-row_number() over(partition by num order by id asc) as grp
+from logs)
+
+select distinct num as consecutiveNums
+from abc
+group by grp,num
+having count(grp) >=3;
+
+
 -- #6 181. Employees Earning More Than Their Managers --
 select e.name as employee 
 from employee as e join employee as m
