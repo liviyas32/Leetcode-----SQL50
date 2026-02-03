@@ -247,8 +247,35 @@ where mod(id,2)!=0 and  not description like 'boring'
 order by rating desc;
 
 
+-- 2nd February 2026 --
 -- #28 1251. Average Selling Price
+select p.product_id, round(coalesce(sum(p.price*u.units)/sum(u.units),0),2) as average_price
+from prices as p left join unitssold as u
+on p.product_id = u.product_id
+and u.purchase_date >= p.start_date 
+and u.purchase_date <= p.end_date
+group by 1;
 
 
+-- #29 1075. Project Employees I
+select p.project_id, round(avg(e.experience_years),2) as average_years
+from project as p left join employee as e
+on p.employee_id = e.employee_id
+group by 1;
+
+
+-- #30 1633. Percentage of Users Attended a Contest
+select contest_id, round(count(distinct r.user_id)/(select count(distinct user_id) from users)*100,2) as percentage
+from users as u right join register as r
+on u.user_id = r.user_id
+group by 1
+order by percentage desc, contest_id asc;
+
+
+-- #31 1211. Queries Quality and Percentage
+select query_name, round(avg(rating/position),2) as quality, 
+round(sum(case when rating<3 then 1 else 0 end)/count(rating)*100,2) as poor_query_percentage
+from queries
+group by 1;
 
 
