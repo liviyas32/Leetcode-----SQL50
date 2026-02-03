@@ -303,3 +303,76 @@ on d.customer_id = fo.customer_id and d.order_date = fo.first_order;
 
 
 -- #34 550. Game Play Analysis IV
+with first_login as
+(select player_id, min(event_date) as first_date
+from activity
+group by 1)
+
+select 
+round(sum(case when a.player_id is not null then 1 else 0 end)/count(lg.player_id),2) as fraction
+from activity as a right join first_login as lg
+on a.player_id = lg.player_id and a.event_date = date_add(lg.first_date,interval 1 day
+
+
+-- #35 2356. Number of Unique Subjects Taught by Each Teacher
+select teacher_id, count(distinct subject_id) as cnt
+from teacher
+group by 1;
+
+
+-- #36 1141. User Activity for the Past 30 Days I
+select activity_date as day, count(distinct user_id) as active_users
+from activity
+where activity_date between date_sub('2019-07-27', interval 29 day) and '2019-07-27'
+group by 1;
+
+
+-- #37 1070. Product Sales Analysis III
+with fy as
+(select product_id, min(year) as first_year
+from sales
+group by 1)
+
+select fy.product_id, fy.first_year, s.quantity, s.price
+from fy left join sales as s
+on fy.product_id = s.product_id and fy.first_year = s.year;
+
+
+-- #38 596. Classes With at Least 5 Students
+select class
+from courses
+group by 1
+having count(distinct student)>=5;
+
+
+-- #39 1729. Find Followers Count
+select user_id, count(*) as followers_count
+from followers
+group by 1
+order by user_id asc;
+
+
+-- #40 619. Biggest Single Number
+select 
+  (select num
+from mynumbers
+group by 1
+having count(*)=1
+order by num desc
+limit 1) as num;
+
+
+-- #41 1045. Customers Who Bought All Products
+select customer_id
+from customer as c right join product as p
+on c.product_key = p.product_key
+group by 1
+having count(distinct c.product_key) = (select count(distinct product_key) from product);
+
+
+-- #42 1731. The Number of Employees Which Report to Each Employee
+select m.employee_id, m.name, count(e.reports_to) as reports_count, round(avg(e.age)) as average_age
+from employees as e join employees as m
+on e.reports_to=m.employee_id
+group by 1
+order by 1;
