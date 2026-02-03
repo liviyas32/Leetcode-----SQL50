@@ -279,3 +279,27 @@ from queries
 group by 1;
 
 
+-- 3rd February 2026 --
+-- #32 1193. Monthly Transactions I
+select date_format(trans_date,'%Y-%m') as month, country, 
+count(trans_date) as trans_count,
+sum(case when state = 'approved' then 1 else 0 end) as approved_count,
+sum(amount) as trans_total_amount,
+sum(case when state = 'approved' then amount else 0 end) as approved_total_amount
+from transactions
+group by 1,2;
+
+
+-- #33 1174. Immediate Food Delivery II
+with fo_date as
+(select customer_id, min(order_date) as first_order
+from delivery 
+group by 1)
+
+select 
+round(sum(case when datediff(customer_pref_delivery_date, fo.first_order) = 0 then 1 else 0 end)/count(d.customer_id)*100,2) as immediate_percentage
+from delivery as d join fo_date as fo
+on d.customer_id = fo.customer_id and d.order_date = fo.first_order;
+
+
+-- #34 550. Game Play Analysis IV
